@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from main.ClientTransaction import ClientTransactionAdminForm, TransactionProductForm
 
 from main.helperMethod import action_on_delete_puchase
 from .models import Client, ClientTransaction, ProductType,Unit,Product,ProductAttribute,Brand,WholeSaler,Purchase
@@ -52,5 +53,18 @@ class ClientTransactionAdmin(admin.ModelAdmin):
     list_filter = ('transaction_type',)  # Example filter
     search_fields = ('client', 'last_name',)  # Example search
 
+
 admin.site.register(ClientTransaction,ClientTransactionAdmin)
 admin.site.register(Purchase, PurchaseAdmin)
+
+
+class TransactionProductInline(admin.TabularInline):
+    model = Product
+    form = TransactionProductForm
+    extra = 1
+
+class ClientTransactionAdmin(admin.ModelAdmin):
+    form = ClientTransactionAdminForm
+    inlines = [TransactionProductInline]
+
+admin.site.register(ClientTransaction, ClientTransactionAdmin)
