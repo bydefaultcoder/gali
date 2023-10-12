@@ -1,0 +1,36 @@
+<form method="post" id="transaction-form">
+    {% csrf_token %}
+    <!-- Fields for ClientTransaction -->
+    {{ transaction_form.as_p }}
+
+    <!-- Container for dynamic product transactions -->
+    <div id="product-transactions">
+        <!-- Initial fields for TransactionProduct -->
+        {{ transaction_product_formset.management_form }}
+        {% for form in transaction_product_formset %}
+            {{ form.as_table }}
+        {% endfor }}
+
+        <!-- Button to add more product transactions -->
+        <button type="button" id="add-transaction">Add Product Transaction</button>
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const transactionForm = document.getElementById('transaction-form');
+        const productTransactions = document.getElementById('product-transactions');
+        const addTransactionButton = document.getElementById('add-transaction');
+
+        addTransactionButton.addEventListener('click', function() {
+            const formCount = productTransactions.childElementCount - 1;  // Subtract one for management form
+            const newForm = productTransactions.firstElementChild.cloneNode(true);
+
+            // Update form prefixes to avoid formset management issues
+            newForm.innerHTML = newForm.innerHTML.replace(/form-\d/g, `form-${formCount}`);
+            productTransactions.appendChild(newForm);
+        });
+    });
+</script>
