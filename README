@@ -1,0 +1,8 @@
+source env/bin/activate
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py runserver 192.168.186.158:8000
+

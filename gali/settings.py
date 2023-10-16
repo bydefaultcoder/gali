@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # 'address',
     'main'
 ]
+# AUTH_USER_MODEL = 'main.CustomUser'  # Replace 'yourapp' with your app's name
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,7 +81,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    #     'mongo_db': {
+    #     'ENGINE': 'django_mongodb_engine',
+    #     'NAME': 'your_database_name',
+    # }
 }
 
 
@@ -102,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 # AUTH_USER_MODEL = 'main.CustomUser'
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
