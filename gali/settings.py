@@ -36,10 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'address',
     'main'
 ]
-# AUTH_USER_MODEL = 'main.CustomUser'  # Replace 'yourapp' with your app's name
+# AUTH_USER_MODEL = 'main.ShopKeeper'  # Replace 'yourapp' with your app's name
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from main.admin import gali_admin
 
 urlpatterns = [
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('galiadmin/', gali_admin.urls),
 ]
 if settings.DEBUG:

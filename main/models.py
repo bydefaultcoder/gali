@@ -4,10 +4,29 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User  # Import the User model
 
 from django.utils import timezone
-
+from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from main.customModelManager import PurchaseModelManager
+from main.mangers import ShopKeeperManager
 from main.helperMethod import action_on_delete_puchase
 # Create a model for product quantity measurements
+
+
+class ShopKeeper(AbstractBaseUser, PermissionsMixin):
+    username = None
+    email = models.EmailField(unique=True)
+    shop_name = models.CharField(max_length=255)  # Add the company_name field
+    mobile_nuber = models.CharField(max_length=10,blank=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = ShopKeeperManager()
+
+    # USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = ['shop_name']
+
+    def __str__(self):
+        return self.shop_name
+
 
 
 class WholeSaler(models.Model):
@@ -18,7 +37,7 @@ class WholeSaler(models.Model):
     street_address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
     postal_code = models.CharField(max_length=20)
     # address = 
     def __str__(self):
@@ -29,7 +48,7 @@ class Unit(models.Model):
     name = models.CharField(max_length=50, unique=True)
     convertTo = models.ForeignKey('self',null=True,blank=True,default=None,on_delete=models.SET(None))
     convertNumber = models.DecimalField(max_digits=10, decimal_places=3)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
     def __str__(self):  
         return self.name
 
@@ -40,7 +59,7 @@ class Brand(models.Model):
     description = models.TextField(blank=True, null=True)
     website = models.URLField(blank=True, null=True)
     logo = models.ImageField(upload_to='brand_logos/', blank=True, null=True)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
@@ -48,7 +67,7 @@ class Brand(models.Model):
 class ProductType(models.Model):
     name = models.CharField(max_length=100, unique=True)
     parent_type = models.ForeignKey('self',on_delete=models.SET_DEFAULT, null=True, blank=True,default=-1)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
     def __str__(self):
         return self.name
 # class ProductTypeQuantity(models.Model):
@@ -62,12 +81,10 @@ class ProductType(models.Model):
 class ProductAttribute(models.Model):
     key = models.CharField(max_length=100)
     value = models.CharField(max_length=255)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
         # your_app/static/your_app/js/custom_admin.js
     def __str__(self):
         return f'{self.key}:{self.value}'
-
-
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
@@ -79,7 +96,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     attributes = models.ManyToManyField(ProductAttribute)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
     class Media:
         js = ('admin/js/custom.js',)
     def __str__(self):
@@ -92,7 +109,7 @@ class Purchase(models.Model):
     number_of_unit = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(default=timezone.now)
     whole_saler = models.ForeignKey(WholeSaler, on_delete=models.SET_NULL, null=True, blank=True)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
     def __str__(self):
         return f"{self.number_of_unit} - {self.product} {self.unit_price*self.number_of_unit} - {self.date}"
 
@@ -137,7 +154,7 @@ class Client(models.Model):
     address = models.TextField()
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     age_group = models.CharField(max_length=10, choices=AGE_GROUP_CHOICES, blank=True, null=True)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
     # city = models.CharField(max_length=100)
     # state = models.CharField(max_length=100)
     # postal_code = models.CharField(max_length=10)
@@ -167,7 +184,7 @@ class ClientTransaction(models.Model):
     product_quantity = models.DecimalField(max_digits=10, decimal_places=2)
     discount_type = models.CharField(max_length=8, choices=DISCOUNT_CHOICES, blank=True, null=True)
     discount = models.DecimalField(max_digits=10, decimal_places=2)
-    vender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    vender = models.ForeignKey(ShopKeeper, on_delete=models.SET_NULL, null=True)
         # Product-related fields
     price = models.DecimalField(max_digits=10, decimal_places=2)
     price_paid = models.DecimalField(max_digits=10, decimal_places=2)
