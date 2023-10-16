@@ -3,7 +3,7 @@ from django.urls import path
 # from main.ClientTransaction import ClientTransactionAdminForm, TransactionProductForm
 
 from main.helperMethod import action_on_delete_puchase
-from .models import Client, ClientTransaction, ShopKeeper, ProductType,Unit,Product,ProductAttribute,Brand,WholeSaler,Purchase
+from .models import Client, ClientTransaction, CustomUser, ProductType,Unit,Product,ProductAttribute,Brand,WholeSaler,Purchase
 # ProductTypeQuantity
 
 class GaliAdmin(admin.AdminSite):
@@ -118,9 +118,9 @@ class ClientTransactionAdmin(admin.ModelAdmin):
 
 gali_admin.register(ClientTransaction,ClientTransactionAdmin)
 
-class ShopKeeperAdmin(admin.ModelAdmin):
+class CustomUserAdmin(admin.ModelAdmin):
     list_display = ['shop_name']
-admin.site.register(ShopKeeper)
+admin.site.register(CustomUser,CustomUserAdmin)
 
 # class TransactionProductInline(admin.TabularInline):
 #     model = Product
